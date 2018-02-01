@@ -1,7 +1,10 @@
 package pl.slawek.wotskills.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Player {
 	private String nickname;
+	@JsonProperty("account_id")
 	private long accountId;
 
 	public Player() {

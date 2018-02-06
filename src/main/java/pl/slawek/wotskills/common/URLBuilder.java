@@ -13,14 +13,16 @@ public class URLBuilder {
     private static final String HOST = "api.worldoftanks.eu/wot";
     private static final String APPLICATIONID = "15d552629efc3fec1cd514a02762ca61";
 
-    public static URL getURL(String path, HashMap<String, String> parameters) {
+    public static URL getURL(final String path, final HashMap<String, String> parameters) {
         URIBuilder builder = new URIBuilder();
         builder.setScheme("https");
         builder.setHost(HOST);
         builder.setPath(path);
         builder.addParameter("application_id", APPLICATIONID);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            builder.addParameter(entry.getKey(), entry.getValue());
+        if (parameters != null) {
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                builder.addParameter(entry.getKey(), entry.getValue());
+            }
         }
 
         try {

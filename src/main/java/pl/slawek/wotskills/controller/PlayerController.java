@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.slawek.wotskills.common.JsonReader;
 import pl.slawek.wotskills.model.Player;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
+import pl.slawek.wotskills.model.Vehicle;
 
 import java.util.List;
 
@@ -17,4 +18,9 @@ public class PlayerController {
 		Player player = JsonReader.getPlayerAccount(nickname);
 		return JsonReader.getPlayerVehicleStats(player.getAccountId());
 	}
+
+    @RequestMapping("/tanks")
+    public List<Vehicle> getVehicles() {
+        return JsonReader.getVehicles();
+    }
 }

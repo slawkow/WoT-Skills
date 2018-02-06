@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.slawek.wotskills.model.Player;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
+import pl.slawek.wotskills.model.Vehicle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,7 @@ public class JsonReader {
             e.printStackTrace();
         }
 
-        if (players.size() > 0)
+        if (players != null && players.size() > 0)
             return players.get(0);
         else {
             throw new IllegalArgumentException("Nickname: " + nickname + " has not been found.");
@@ -58,6 +60,23 @@ public class JsonReader {
         }
 
         return playerVehicleStats;
+    }
+
+    public static List<Vehicle> getVehicles() {
+        URL url = URLBuilder.getURL("/encyclopedia/tanks/", null);
+        mapper = new ObjectMapper();
+        JsonNode vehicles = getJsonTree(url).get("data");
+
+        final List<Vehicle> vehiclesList = new ArrayList<>();
+        vehicles.forEach(vehicle -> {
+            try {
+                vehiclesList.add(mapper.treeToValue(vehicle, Vehicle.class));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return vehiclesList;
     }
 
     private static JsonNode getJsonTree(URL url) {

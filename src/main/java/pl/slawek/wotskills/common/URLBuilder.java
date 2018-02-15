@@ -32,4 +32,8 @@ public class URLBuilder {
             throw new RuntimeException("URL was built with errors.");
         }
     }
+
+    public static URL getURL(final String path) {
+        return getURL(path, null);
+    }
 }

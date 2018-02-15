@@ -63,7 +63,7 @@ public class JsonReader {
     }
 
     public static List<Vehicle> getVehicles() {
-        URL url = URLBuilder.getURL("/encyclopedia/tanks/", null);
+        URL url = URLBuilder.getURL("/encyclopedia/tanks/");
         mapper = new ObjectMapper();
         JsonNode vehicles = getJsonTree(url).get("data");
 
@@ -87,10 +87,9 @@ public class JsonReader {
             e.printStackTrace();
         }
 
-        if (tree != null) {
-            return tree;
-        } else {
+        if (tree == null)
             throw new RuntimeException("JSON tree has not been read correctly.");
-        }
+
+        return tree;
     }
 }

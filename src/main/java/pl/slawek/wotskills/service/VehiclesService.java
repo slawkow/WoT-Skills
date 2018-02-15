@@ -8,7 +8,14 @@ import java.util.List;
 
 @Service
 public class VehiclesService {
+
+    private List<Vehicle> vehicles;
+
     public List<Vehicle> getVehicles() {
-        return JsonReader.getVehicles();
+        if (vehicles == null) {
+            vehicles = JsonReader.getVehicles();
+        }
+
+        return vehicles;
     }
 }

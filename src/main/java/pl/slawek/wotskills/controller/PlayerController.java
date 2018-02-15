@@ -4,32 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.slawek.wotskills.common.JsonReader;
 import pl.slawek.wotskills.model.Player;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
-import pl.slawek.wotskills.model.Vehicle;
-import pl.slawek.wotskills.service.VehiclesService;
+import pl.slawek.wotskills.service.PlayerService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/players")
 public class PlayerController {
 
-    private VehiclesService vehiclesService;
-
     @Autowired
-    public PlayerController(VehiclesService vehiclesService) {
-        this.vehiclesService = vehiclesService;
-    }
+    private PlayerService playerService;
 
-	@RequestMapping("/players/{nickname}")
+    @RequestMapping("/{nickname}")
 	public List<PlayerVehicleStats> getPlayerTanks(@PathVariable String nickname) {
-		Player player = JsonReader.getPlayerAccount(nickname);
-		return JsonReader.getPlayerVehicleStats(player.getAccountId());
+        Player player = playerService.getPlayer(nickname);
+        return playerService.getPlayerVehicleStats(player.getAccountId());
 	}
-
-    @RequestMapping("/tanks")
-    public List<Vehicle> getVehicles() {
-        return vehiclesService.getVehicles();
-    }
 }

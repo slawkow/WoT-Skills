@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.slawek.wotskills.model.Player;
+import pl.slawek.wotskills.model.PlayerOverallData;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
 import pl.slawek.wotskills.model.Vehicle;
 
@@ -52,14 +53,12 @@ public class JsonReader {
         mapper = new ObjectMapper();
         JsonNode playerVehicles = getJsonTree(url).get("data").get(String.valueOf(accountID));
 
-        List<PlayerVehicleStats> playerVehicleStats = null;
         try {
-            playerVehicleStats = Arrays.asList(mapper.treeToValue(playerVehicles, PlayerVehicleStats[].class));
+            return Arrays.asList(mapper.treeToValue(playerVehicles, PlayerVehicleStats[].class));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            throw new RuntimeException("Something went wrong with parsing JSON");
         }
-
-        return playerVehicleStats;
     }
 
     public static List<Vehicle> getVehicles() {
@@ -91,5 +90,23 @@ public class JsonReader {
             throw new RuntimeException("JSON tree has not been read correctly.");
 
         return tree;
+    }
+
+    public static PlayerOverallData getPlayerOverallData(long accountID) {
+        HashMap<String, String> parameters = new HashMap<String, String>() {{
+            put("account_id", String.valueOf(accountID));
+        }};
+
+        URL url = URLBuilder.getURL("/account/info/", parameters);
+        mapper = new ObjectMapper();
+        JsonNode playerOverallDataNode = getJsonTree(url).get("data").get(String.valueOf(accountID));
+
+
+        try {
+            return mapper.treeToValue(playerOverallDataNode, PlayerOverallData.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Something went wrong with parsing JSON");
+        }
     }
 }

@@ -35,6 +35,9 @@ public class JsonReader {
             players = Arrays.asList(mapper.treeToValue(playerDataNode, Player[].class));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            //TODO wot-api error handling
+            throw new RuntimeException("Something went wrong with reading tree (probably IP is out of date for API");
         }
 
         if (players != null && players.size() > 0)

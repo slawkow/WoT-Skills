@@ -7,10 +7,12 @@ import pl.slawek.wotskills.model.Player;
 import pl.slawek.wotskills.model.PlayerOverallData;
 import pl.slawek.wotskills.model.PlayerStats;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
-import pl.slawek.wotskills.model.dto.PlayerOverallDataDTO;
+import pl.slawek.wotskills.model.dto.PlayerDataDTO;
 import pl.slawek.wotskills.model.dto.PlayerStatsContainerDTO;
 import pl.slawek.wotskills.model.dto.PlayerStatsDTO;
+import pl.slawek.wotskills.model.dto.TankStatsDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +26,7 @@ public class PlayerService {
         return JsonReader.getPlayerVehicleStats(accountID);
     }
 
-    public PlayerOverallDataDTO getPlayerOverallData(long accountID) {
+    public PlayerDataDTO getPlayerOverallData(long accountID) {
         PlayerOverallData playerOverallData = JsonReader.getPlayerOverallData(accountID);
 
         String createdAt = DataUtil.getDataFromTimestamp(playerOverallData.getCreatedAt());
@@ -36,20 +38,53 @@ public class PlayerService {
                 .all(getPlayerStatsFromData(playerOverallData))
                 .build();
 
-        PlayerOverallDataDTO playerOverallDataDTO = PlayerOverallDataDTO.builder()
+        List<TankStatsDTO> tanksStats = getTanksStats(accountID);
+
+        PlayerDataDTO playerDataDTO = PlayerDataDTO.builder()
                 .createdAt(createdAt)
                 .globalRating(playerOverallData.getGlobalRating())
                 .lastBattleTime(lastBattleTime)
                 .logoutAt(logoutAt)
                 .statistics(playerStatsContainer)
                 .updatedAt(updatedAt)
+                .tanks(tanksStats)
                 .build();
 
-        return playerOverallDataDTO;
+        return playerDataDTO;
+    }
+
+    private List<TankStatsDTO> getTanksStats(long accountID) {
+        List<PlayerVehicleStats> playerVehicleStatsList = getPlayerVehicleStats(accountID);
+        List<TankStatsDTO> tanksStats = new ArrayList<>();
+
+        for (PlayerVehicleStats playerVehicleStats : playerVehicleStatsList) {
+            int battles = playerVehicleStats.getAll().getBattles();
+            double avgDmg = getRoundedValue((double) playerVehicleStats.getAll().getDamageDealt() / battles);
+            double fragsRatio = getRoundedValue((double) playerVehicleStats.getAll().getFrags() / battles);
+            double spotRatio = getRoundedValue((double) playerVehicleStats.getAll().getSpotted() / battles);
+            double winRatio = getRoundedValue((double) playerVehicleStats.getAll().getWins() / battles);
+
+            TankStatsDTO tankStatsDTO = TankStatsDTO.builder()
+                    .avgDmg(avgDmg)
+                    .avgXP(playerVehicleStats.getAll().getBattleAvgXp())
+                    .battles(playerVehicleStats.getAll().getBattles())
+                    .fragsRatio(fragsRatio)
+                    .mastery(playerVehicleStats.getMarkOfMastery())
+                    .maxFrags(playerVehicleStats.getMaxFrags())
+                    .maxXP(playerVehicleStats.getMaxXp())
+                    .spotRatio(spotRatio)
+                    .tankName(String.valueOf(playerVehicleStats.getTankId()))
+                    .winRatio(winRatio)
+                    .build();
+
+            tanksStats.add(tankStatsDTO);
+        }
+
+        return tanksStats;
     }
 
     private PlayerStatsDTO getPlayerStatsFromData(PlayerOverallData playerOverallData) {
-        //TODO do it for another stats possibilites
+        //TODO do it for another stats possibilites (distribute .getAll())
         PlayerStats playerStats = playerOverallData.getStatistics().getAll();
 
         double avgDamage = getRoundedValue((double) playerStats.getDamageDealt() / playerStats.getBattles());

@@ -6,23 +6,21 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
 
 public class URLBuilder {
 
     private static final String HOST = "api.worldoftanks.eu/wot";
     private static final String APPLICATIONID = "15d552629efc3fec1cd514a02762ca61";
+    private static final String SCHEME = "https";
 
     public static URL getURL(final String path, final HashMap<String, String> parameters) {
         URIBuilder builder = new URIBuilder();
-        builder.setScheme("https");
+        builder.setScheme(SCHEME);
         builder.setHost(HOST);
         builder.setPath(path);
         builder.addParameter("application_id", APPLICATIONID);
         if (parameters != null) {
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                builder.addParameter(entry.getKey(), entry.getValue());
-            }
+            parameters.forEach(builder::addParameter);
         }
 
         try {

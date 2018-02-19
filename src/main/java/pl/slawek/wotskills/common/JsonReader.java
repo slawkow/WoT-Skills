@@ -3,6 +3,7 @@ package pl.slawek.wotskills.common;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.CollectionUtils;
 import pl.slawek.wotskills.model.Player;
 import pl.slawek.wotskills.model.PlayerOverallData;
 import pl.slawek.wotskills.model.PlayerVehicleStats;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class JsonReader {
 
+    private static final String DATA_NODE = "data";
     private static ObjectMapper mapper;
 
     public static Player getPlayerAccount(String nickname) {
@@ -28,7 +30,7 @@ public class JsonReader {
         URL url = URLBuilder.getURL("account/list/", parameters);
         mapper = new ObjectMapper();
 
-        JsonNode playerDataNode = getJsonTree(url).get("data");
+        JsonNode playerDataNode = getJsonTree(url).get(DATA_NODE);
         List<Player> players = null;
 
         try {
@@ -40,7 +42,7 @@ public class JsonReader {
             throw new RuntimeException("Something went wrong with reading tree (probably IP is out of date for API");
         }
 
-        if (players != null && players.size() > 0)
+        if (!CollectionUtils.isEmpty(players))
             return players.get(0);
         else {
             throw new IllegalArgumentException("Nickname: " + nickname + " has not been found.");
@@ -54,7 +56,8 @@ public class JsonReader {
 
         URL url = URLBuilder.getURL("/tanks/stats/", parameters);
         mapper = new ObjectMapper();
-        JsonNode playerVehicles = getJsonTree(url).get("data").get(String.valueOf(accountID));
+        JsonNode playerVehiclesDataNode = getJsonTree(url).get(DATA_NODE);
+        JsonNode playerVehicles = playerVehiclesDataNode.get(String.valueOf(accountID));
 
         try {
             return Arrays.asList(mapper.treeToValue(playerVehicles, PlayerVehicleStats[].class));
@@ -67,7 +70,7 @@ public class JsonReader {
     public static List<Vehicle> getVehicles() {
         URL url = URLBuilder.getURL("/encyclopedia/tanks/");
         mapper = new ObjectMapper();
-        JsonNode vehicles = getJsonTree(url).get("data");
+        JsonNode vehicles = getJsonTree(url).get(DATA_NODE);
 
         final List<Vehicle> vehiclesList = new ArrayList<>();
         vehicles.forEach(vehicle -> {
@@ -96,17 +99,17 @@ public class JsonReader {
     }
 
     public static PlayerOverallData getPlayerOverallData(long accountID) {
-        HashMap<String, String> parameters = new HashMap<String, String>() {{
+        HashMap parameters = new HashMap<String, String>() {{
             put("account_id", String.valueOf(accountID));
         }};
 
         URL url = URLBuilder.getURL("/account/info/", parameters);
         mapper = new ObjectMapper();
-        JsonNode playerOverallDataNode = getJsonTree(url).get("data").get(String.valueOf(accountID));
-
+        JsonNode playerOverallDataNode = getJsonTree(url).get(DATA_NODE);
+        JsonNode playerOverall = playerOverallDataNode.get(String.valueOf(accountID));
 
         try {
-            return mapper.treeToValue(playerOverallDataNode, PlayerOverallData.class);
+            return mapper.treeToValue(playerOverall, PlayerOverallData.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new RuntimeException("Something went wrong with parsing JSON");

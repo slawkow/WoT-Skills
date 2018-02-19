@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pl.slawek.wot</groupId>
-	<artifactId>wotskills</artifactId>
+	<artifactId>wotskills-backend</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>wotskills Maven Webapp</name>
@@ -54,6 +54,6 @@
         </dependency>
     </dependencies>
 	<build>
-		<finalName>wotskills</finalName>
+		<finalName>wotskills-backend</finalName>
 	</build>
 </project>

@@ -84,7 +84,7 @@ public class PlayerService {
     }
 
     private PlayerStatsDTO getPlayerStatsFromData(PlayerOverallData playerOverallData) {
-        //TODO do it for another stats possibilites (distribute .getAll())
+        //TODO do it for another stats possibilities (distribute .getAll())
         PlayerStats playerStats = playerOverallData.getStatistics().getAll();
 
         double avgDamage = getRoundedValue((double) playerStats.getDamageDealt() / playerStats.getBattles());

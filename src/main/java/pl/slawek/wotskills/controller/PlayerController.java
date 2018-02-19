@@ -13,8 +13,12 @@ import pl.slawek.wotskills.service.PlayerService;
 @RequestMapping("/players")
 public class PlayerController {
 
+    private final PlayerService playerService;
+
     @Autowired
-    private PlayerService playerService;
+    public PlayerController(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     @RequestMapping("/{nickname}")
     public ResponseEntity<PlayerDataDTO> getPlayerOverallData(@PathVariable String nickname) {

@@ -6,11 +6,10 @@ import java.time.Instant;
 import java.util.Date;
 
 public class DataUtil {
-    public static String getDataFromTimestamp(long time) {
+    public static String getDataFromTimestamp(final long time) {
         Timestamp stamp = new Timestamp(time);
         Date date = Date.from(Instant.ofEpochSecond(stamp.getTime()));
-        String simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(date);
 
-        return simpleDateFormat;
+        return new SimpleDateFormat("dd.MM.yyyy HH:mm").format(date);
     }
 }

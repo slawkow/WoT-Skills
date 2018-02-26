@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.Date;
 
 public class DataUtil {
-    public static String getDataFromTimestamp(final long time) {
+    public static String getDateFromTimestamp(final long time) {
         Timestamp stamp = new Timestamp(time);
         Date date = Date.from(Instant.ofEpochSecond(stamp.getTime()));
 

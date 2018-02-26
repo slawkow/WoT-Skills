@@ -17,6 +17,8 @@ public class URLBuilder {
         URIBuilder builder = new URIBuilder();
         builder.setScheme(SCHEME);
         builder.setHost(HOST);
+        if ("".equals(path))
+            throw new IllegalArgumentException("Path for URL has not been correctly specified.");
         builder.setPath(path);
         builder.addParameter("application_id", APPLICATIONID);
         if (parameters != null) {

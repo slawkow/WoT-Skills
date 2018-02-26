@@ -29,10 +29,10 @@ public class PlayerService {
     public PlayerDataDTO getPlayerOverallData(long accountID) {
         PlayerOverallData playerOverallData = JsonReader.getPlayerOverallData(accountID);
 
-        String createdAt = DataUtil.getDataFromTimestamp(playerOverallData.getCreatedAt());
-        String logoutAt = DataUtil.getDataFromTimestamp(playerOverallData.getLogoutAt());
-        String updatedAt = DataUtil.getDataFromTimestamp(playerOverallData.getUpdatedAt());
-        String lastBattleTime = DataUtil.getDataFromTimestamp(playerOverallData.getLastBattleTime());
+        String createdAt = DataUtil.getDateFromTimestamp(playerOverallData.getCreatedAt());
+        String logoutAt = DataUtil.getDateFromTimestamp(playerOverallData.getLogoutAt());
+        String updatedAt = DataUtil.getDateFromTimestamp(playerOverallData.getUpdatedAt());
+        String lastBattleTime = DataUtil.getDateFromTimestamp(playerOverallData.getLastBattleTime());
 
         PlayerStatsContainerDTO playerStatsContainer = PlayerStatsContainerDTO.builder()
                 .all(getPlayerStatsFromData(playerOverallData))
